@@ -24,11 +24,11 @@ class PropertyCard extends StatelessWidget {
       height: cardHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppDimensions.cardRadius),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: AppColors.cardShadow,
             blurRadius: AppDimensions.shadowBlurRadius,
-            offset: const Offset(0, AppDimensions.shadowOffsetY),
+            offset: Offset(0, AppDimensions.shadowOffsetY),
             spreadRadius: AppDimensions.shadowSpreadRadius,
           ),
         ],

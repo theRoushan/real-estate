@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:property_swipe/features/swipe/providers/swipe_providers.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_dimensions.dart';
@@ -8,7 +9,6 @@ import '../../../../models/property_listing.dart';
 import '../widgets/property_card.dart';
 import '../widgets/swipe_action_buttons.dart';
 import '../widgets/swipe_overlay.dart';
-import '../providers/swipe_providers.dart';
 
 class SwipePage extends ConsumerStatefulWidget {
   const SwipePage({super.key});

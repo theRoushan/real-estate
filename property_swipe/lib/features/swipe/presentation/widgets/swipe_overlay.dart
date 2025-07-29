@@ -53,7 +53,7 @@ class SwipeOverlay extends StatelessWidget {
   }
 
   double _getSwipeIntensity() {
-    final double maxThreshold = 0.5; // Maximum threshold for full intensity
+    const double maxThreshold = 0.5; // Maximum threshold for full intensity
     
     switch (_getSwipeDirection()) {
       case SwipeDirection.left:
@@ -263,7 +263,7 @@ class SwipeOverlayWithRotation extends StatelessWidget {
   }
 
   double _getSwipeIntensity() {
-    final double maxThreshold = 0.5;
+    const double maxThreshold = 0.5;
     
     switch (_getSwipeDirection()) {
       case SwipeDirection.left:
