@@ -257,8 +257,6 @@ class AppTheme {
     onError: AppColors.textOnPrimary,
     surface: AppColors.surface,
     onSurface: AppColors.textPrimary,
-    background: AppColors.background,
-    onBackground: AppColors.textPrimary,
     outline: AppColors.cardBorder,
     shadow: AppColors.cardShadow,
   );

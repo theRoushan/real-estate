@@ -239,5 +239,5 @@ enum SwipeAction {
   @JsonValue('right')
   right,
   @JsonValue('super')
-  super,
+  superLike,
 }

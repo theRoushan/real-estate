@@ -133,7 +133,7 @@ enum SeekerSwipeType {
   @JsonValue('right')
   right,
   @JsonValue('super')
-  super,
+  superLike,
 }
 
 enum MatchStatus {
