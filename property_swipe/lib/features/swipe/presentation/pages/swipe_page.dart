@@ -85,8 +85,8 @@ class _SwipePageState extends ConsumerState<SwipePage> {
               
               // Swipe Overlay
               SwipeOverlay(
-                horizontalThreshold: horizontalThresholdPercentage,
-                verticalThreshold: verticalThresholdPercentage,
+                horizontalThreshold: horizontalThresholdPercentage.toDouble(),
+                verticalThreshold: verticalThresholdPercentage.toDouble(),
               ),
             ],
           );
@@ -198,6 +198,9 @@ class _SwipePageState extends ConsumerState<SwipePage> {
         break;
       case CardSwiperDirection.bottom:
         // Not used in our case
+        break;
+      case CardSwiperDirection.none:
+        // No action needed for none direction
         break;
     }
     
