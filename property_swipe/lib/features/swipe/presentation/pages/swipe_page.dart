@@ -8,6 +8,7 @@ import '../../../../models/property_listing.dart';
 import '../widgets/property_card.dart';
 import '../widgets/swipe_action_buttons.dart';
 import '../widgets/swipe_overlay.dart';
+import '../providers/swipe_providers.dart';
 
 class SwipePage extends ConsumerStatefulWidget {
   const SwipePage({super.key});
@@ -18,12 +19,11 @@ class SwipePage extends ConsumerStatefulWidget {
 
 class _SwipePageState extends ConsumerState<SwipePage> {
   final CardSwiperController _cardController = CardSwiperController();
-  
-  // Mock data for now - this will be replaced with Riverpod providers
-  final List<PropertyListing> _mockProperties = _generateMockProperties();
 
   @override
   Widget build(BuildContext context) {
+    final swipeState = ref.watch(swipeProvider);
+    final swipeNotifier = ref.read(swipeProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('PropertySwipe'),
@@ -43,60 +43,132 @@ class _SwipePageState extends ConsumerState<SwipePage> {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // Card Swiper Area
-            Expanded(
-              child: _mockProperties.isEmpty
-                  ? _buildEmptyState()
-                  : _buildCardSwiper(),
-            ),
-            
-            // Action Buttons
-            SwipeActionButtons(
-              onPassTap: () => _handleSwipe(CardSwiperDirection.left),
-              onLikeTap: () => _handleSwipe(CardSwiperDirection.right),
-              onSuperLikeTap: () => _handleSwipe(CardSwiperDirection.top),
-            ),
-            
-            const SizedBox(height: AppDimensions.spacingL),
-          ],
-        ),
+        child: _buildBody(swipeState, swipeNotifier),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
-  Widget _buildCardSwiper() {
-    return Padding(
-      padding: const EdgeInsets.all(AppDimensions.spacingM),
-      child: CardSwiper(
-        controller: _cardController,
-        cardsCount: _mockProperties.length,
-        numberOfCardsDisplayed: 3,
-        allowedSwipeDirection: const AllowedSwipeDirection.symmetric(
-          horizontal: true,
-          vertical: true,
-        ),
-        cardBuilder: (context, index, horizontalThresholdPercentage, verticalThresholdPercentage) {
-          return Stack(
-            children: [
-              PropertyCard(property: _mockProperties[index]),
-              
-              // Swipe Overlay
-              SwipeOverlay(
-                horizontalThreshold: horizontalThresholdPercentage.toDouble(),
-                verticalThreshold: verticalThresholdPercentage.toDouble(),
-              ),
-            ],
-          );
-        },
-        onSwipe: _onSwipe,
-        onUndo: _onUndo,
-        duration: const Duration(milliseconds: AppDimensions.swipeAnimationDuration),
-        scale: 0.9,
-        threshold: 50,
+  /// Build the main body based on state
+  Widget _buildBody(SwipeState state, SwipeNotifier notifier) {
+    if (state.isLoading && state.properties.isEmpty) {
+      return _buildLoadingState();
+    }
+    
+    if (state.error != null && state.properties.isEmpty) {
+      return _buildErrorState(state.error!, notifier);
+    }
+    
+    if (state.properties.isEmpty) {
+      return _buildEmptyState();
+    }
+    
+    return _buildSwipeInterface(state, notifier);
+  }
+  
+  /// Build loading state
+  Widget _buildLoadingState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: AppDimensions.spacingL),
+          Text(
+            'Loading properties...',
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
       ),
+    );
+  }
+  
+  /// Build error state
+  Widget _buildErrorState(String error, SwipeNotifier notifier) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            size: 80,
+            color: AppColors.error,
+          ),
+          const SizedBox(height: AppDimensions.spacingL),
+          Text(
+            error,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: AppDimensions.spacingL),
+          ElevatedButton(
+            onPressed: () => notifier.refreshProperties(),
+            child: const Text('Try Again'),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  /// Build the main swipe interface
+  Widget _buildSwipeInterface(SwipeState state, SwipeNotifier notifier) {
+    final visibleProperties = state.properties.skip(state.currentIndex).take(3).toList();
+    
+    return Column(
+      children: [
+        // Card Swiper Area
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(AppDimensions.spacingM),
+            child: CardSwiper(
+              controller: _cardController,
+              cardsCount: visibleProperties.length,
+              numberOfCardsDisplayed: 3,
+              allowedSwipeDirection: const AllowedSwipeDirection.symmetric(
+                horizontal: true,
+                vertical: true,
+              ),
+              cardBuilder: (context, index, horizontalThresholdPercentage, verticalThresholdPercentage) {
+                return Stack(
+                  children: [
+                    PropertyCard(property: visibleProperties[index]),
+                    
+                    // Swipe Overlay
+                    SwipeOverlay(
+                      horizontalThreshold: horizontalThresholdPercentage.toDouble(),
+                      verticalThreshold: verticalThresholdPercentage.toDouble(),
+                    ),
+                  ],
+                );
+              },
+              onSwipe: (previousIndex, currentIndex, direction) => _onSwipe(
+                visibleProperties[previousIndex],
+                direction,
+                notifier,
+              ),
+              onUndo: _onUndo,
+              duration: const Duration(milliseconds: AppDimensions.swipeAnimationDuration),
+              scale: 0.9,
+              threshold: 50,
+            ),
+          ),
+        ),
+        
+        // Action Buttons
+        SwipeActionButtons(
+          onPassTap: () => _handleSwipe(CardSwiperDirection.left, notifier),
+          onLikeTap: () => _handleSwipe(CardSwiperDirection.right, notifier),
+          onSuperLikeTap: () => _handleSwipe(CardSwiperDirection.top, notifier),
+        ),
+        
+        const SizedBox(height: AppDimensions.spacingL),
+      ],
     );
   }
 
@@ -174,33 +246,29 @@ class _SwipePageState extends ConsumerState<SwipePage> {
     );
   }
 
-  void _handleSwipe(CardSwiperDirection direction) {
+  void _handleSwipe(CardSwiperDirection direction, SwipeNotifier notifier) {
     _cardController.swipe(direction);
   }
 
   bool _onSwipe(
-    int previousIndex, 
-    int? currentIndex, 
+    PropertyListing property,
     CardSwiperDirection direction,
+    SwipeNotifier notifier,
   ) {
-    // Handle swipe action
-    final property = _mockProperties[previousIndex];
-    
+    // Handle swipe action with backend integration
     switch (direction) {
       case CardSwiperDirection.left:
-        _handlePropertyPass(property);
+        _handlePropertyAction(property, SwipeAction.left, notifier);
         break;
       case CardSwiperDirection.right:
-        _handlePropertyLike(property);
+        _handlePropertyAction(property, SwipeAction.right, notifier);
         break;
       case CardSwiperDirection.top:
-        _handlePropertySuperLike(property);
+        _handlePropertyAction(property, SwipeAction.superLike, notifier);
         break;
       case CardSwiperDirection.bottom:
-        // Not used in our case
-        break;
       case CardSwiperDirection.none:
-        // No action needed for none direction
+        // Not used in our case
         break;
     }
     
@@ -217,22 +285,30 @@ class _SwipePageState extends ConsumerState<SwipePage> {
     return true;
   }
 
-  void _handlePropertyPass(PropertyListing property) {
-    debugPrint('Passed on property: ${property.basicInfo.title}');
-    // TODO: Implement pass logic with backend
-    _showSwipeSnackbar('Passed', Icons.close, AppColors.swipeLeft);
-  }
-
-  void _handlePropertyLike(PropertyListing property) {
-    debugPrint('Liked property: ${property.basicInfo.title}');
-    // TODO: Implement like logic with backend
-    _showSwipeSnackbar('Liked!', Icons.favorite, AppColors.swipeRight);
-  }
-
-  void _handlePropertySuperLike(PropertyListing property) {
-    debugPrint('Super liked property: ${property.basicInfo.title}');
-    // TODO: Implement super like logic with backend
-    _showSwipeSnackbar('Super Liked!', Icons.star, AppColors.swipeSuper);
+  /// Handle property action with backend integration
+  void _handlePropertyAction(
+    PropertyListing property,
+    SwipeAction action,
+    SwipeNotifier notifier,
+  ) {
+    // Record swipe with backend
+    notifier.handleSwipe(
+      propertyId: property.propertyId,
+      action: action,
+    );
+    
+    // Show feedback to user
+    switch (action) {
+      case SwipeAction.left:
+        _showSwipeSnackbar('Passed', Icons.close, AppColors.swipeLeft);
+        break;
+      case SwipeAction.right:
+        _showSwipeSnackbar('Liked', Icons.favorite, AppColors.swipeRight);
+        break;
+      case SwipeAction.superLike:
+        _showSwipeSnackbar('Super Liked!', Icons.star, AppColors.swipeUp);
+        break;
+    }
   }
 
   void _showSwipeSnackbar(String message, IconData icon, Color color) {
