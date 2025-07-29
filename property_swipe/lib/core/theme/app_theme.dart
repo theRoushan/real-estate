@@ -9,7 +9,7 @@ class AppTheme {
       useMaterial3: true,
       colorScheme: _lightColorScheme,
       fontFamily: 'Inter',
-      
+
       // App Bar Theme
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.background,
@@ -28,7 +28,7 @@ class AppTheme {
           statusBarBrightness: Brightness.light,
         ),
       ),
-      
+
       // Bottom Navigation Theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: AppColors.background,
@@ -47,9 +47,9 @@ class AppTheme {
           fontWeight: FontWeight.normal,
         ),
       ),
-      
+
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.cardBackground,
         elevation: AppDimensions.cardElevation,
         shadowColor: AppColors.cardShadow,
@@ -58,7 +58,7 @@ class AppTheme {
         ),
         margin: const EdgeInsets.all(AppDimensions.spacingS),
       ),
-      
+
       // Elevated Button Theme
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -77,7 +77,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Text Button Theme
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -89,7 +89,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Outlined Button Theme
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
@@ -106,7 +106,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -146,9 +146,9 @@ class AppTheme {
           fontSize: 16,
         ),
       ),
-      
+
       // Dialog Theme
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.background,
         elevation: 8.0,
         shape: RoundedRectangleBorder(
@@ -166,7 +166,7 @@ class AppTheme {
           color: AppColors.textSecondary,
         ),
       ),
-      
+
       // Snackbar Theme
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.textPrimary,
@@ -180,12 +180,12 @@ class AppTheme {
         ),
         behavior: SnackBarBehavior.floating,
       ),
-      
+
       // Progress Indicator Theme
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
       ),
-      
+
       // Chip Theme
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.surface,
@@ -200,25 +200,25 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppDimensions.radiusL),
         ),
       ),
-      
+
       // Text Theme
       textTheme: _textTheme,
-      
+
       // Scaffold Background
       scaffoldBackgroundColor: AppColors.background,
-      
+
       // Divider Theme
       dividerTheme: const DividerThemeData(
         color: AppColors.cardBorder,
         thickness: 1.0,
       ),
-      
+
       // Icon Theme
       iconTheme: const IconThemeData(
         color: AppColors.textSecondary,
         size: AppDimensions.iconM,
       ),
-      
+
       // List Tile Theme
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(
@@ -239,12 +239,12 @@ class AppTheme {
       ),
     );
   }
-  
+
   static ThemeData get darkTheme {
     // For now, return light theme. Dark theme can be implemented later
     return lightTheme;
   }
-  
+
   static const ColorScheme _lightColorScheme = ColorScheme(
     brightness: Brightness.light,
     primary: AppColors.primary,
@@ -257,10 +257,12 @@ class AppTheme {
     onError: AppColors.textOnPrimary,
     surface: AppColors.surface,
     onSurface: AppColors.textPrimary,
+    background: AppColors.background,
+    onBackground: AppColors.textPrimary,
     outline: AppColors.cardBorder,
     shadow: AppColors.cardShadow,
   );
-  
+
   static const TextTheme _textTheme = TextTheme(
     // Display styles (largest text)
     displayLarge: TextStyle(
@@ -283,7 +285,7 @@ class AppTheme {
       fontWeight: FontWeight.w600,
       color: AppColors.textPrimary,
     ),
-    
+
     // Headline styles
     headlineLarge: TextStyle(
       fontFamily: 'Inter',
@@ -303,7 +305,7 @@ class AppTheme {
       fontWeight: FontWeight.w600,
       color: AppColors.textPrimary,
     ),
-    
+
     // Title styles
     titleLarge: TextStyle(
       fontFamily: 'Inter',
@@ -323,7 +325,7 @@ class AppTheme {
       fontWeight: FontWeight.w600,
       color: AppColors.textPrimary,
     ),
-    
+
     // Body styles (most common text)
     bodyLarge: TextStyle(
       fontFamily: 'Inter',
@@ -343,7 +345,7 @@ class AppTheme {
       fontWeight: FontWeight.normal,
       color: AppColors.textSecondary,
     ),
-    
+
     // Label styles (buttons, inputs, etc.)
     labelLarge: TextStyle(
       fontFamily: 'Inter',
@@ -375,28 +377,28 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
-  
+
   static const TextStyle propertyPrice = TextStyle(
     fontFamily: 'Inter',
     fontSize: 20,
     fontWeight: FontWeight.w700,
     color: AppColors.primary,
   );
-  
+
   static const TextStyle propertyLocation = TextStyle(
     fontFamily: 'Inter',
     fontSize: 14,
     fontWeight: FontWeight.normal,
     color: AppColors.textSecondary,
   );
-  
+
   static const TextStyle propertyType = TextStyle(
     fontFamily: 'Inter',
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,
   );
-  
+
   // Button text styles
   static const TextStyle buttonPrimary = TextStyle(
     fontFamily: 'Inter',
@@ -404,14 +406,14 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textOnPrimary,
   );
-  
+
   static const TextStyle buttonSecondary = TextStyle(
     fontFamily: 'Inter',
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.primary,
   );
-  
+
   // Caption and helper text
   static const TextStyle caption = TextStyle(
     fontFamily: 'Inter',
@@ -419,7 +421,7 @@ class AppTextStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.textTertiary,
   );
-  
+
   static const TextStyle overline = TextStyle(
     fontFamily: 'Inter',
     fontSize: 10,
