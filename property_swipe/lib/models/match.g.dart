@@ -8,10 +8,14 @@ part of 'match.dart';
 
 Match _$MatchFromJson(Map<String, dynamic> json) => Match(
       matchId: json['matchId'] as String,
-      participants: MatchParticipants.fromJson(json['participants'] as Map<String, dynamic>),
+      participants: MatchParticipants.fromJson(
+          json['participants'] as Map<String, dynamic>),
       propertyId: json['propertyId'] as String,
-      matchDetails: MatchDetails.fromJson(json['matchDetails'] as Map<String, dynamic>),
-      communication: MatchCommunication.fromJson(json['communication'] as Map<String, dynamic>),
+      matchDetails:
+          MatchDetails.fromJson(json['matchDetails'] as Map<String, dynamic>),
+      communication: MatchCommunication.fromJson(
+          json['communication'] as Map<String, dynamic>),
+      status: $enumDecode(_$MatchStatusEnumMap, json['status']),
     );
 
 Map<String, dynamic> _$MatchToJson(Match instance) => <String, dynamic>{
@@ -20,36 +24,38 @@ Map<String, dynamic> _$MatchToJson(Match instance) => <String, dynamic>{
       'propertyId': instance.propertyId,
       'matchDetails': instance.matchDetails,
       'communication': instance.communication,
+      'status': _$MatchStatusEnumMap[instance.status]!,
     };
 
-MatchParticipants _$MatchParticipantsFromJson(Map<String, dynamic> json) => MatchParticipants(
+const _$MatchStatusEnumMap = {
+  MatchStatus.active: 'active',
+  MatchStatus.archived: 'archived',
+  MatchStatus.blocked: 'blocked',
+};
+
+MatchParticipants _$MatchParticipantsFromJson(Map<String, dynamic> json) =>
+    MatchParticipants(
       seekerId: json['seekerId'] as String,
-      propertyOwnerId: json['propertyOwnerId'] as String,
-      seekerProfile: json['seekerProfile'] as Map<String, dynamic>,
-      ownerProfile: json['ownerProfile'] as Map<String, dynamic>,
+      ownerId: json['ownerId'] as String,
     );
 
-Map<String, dynamic> _$MatchParticipantsToJson(MatchParticipants instance) => <String, dynamic>{
+Map<String, dynamic> _$MatchParticipantsToJson(MatchParticipants instance) =>
+    <String, dynamic>{
       'seekerId': instance.seekerId,
-      'propertyOwnerId': instance.propertyOwnerId,
-      'seekerProfile': instance.seekerProfile,
-      'ownerProfile': instance.ownerProfile,
+      'ownerId': instance.ownerId,
     };
 
 MatchDetails _$MatchDetailsFromJson(Map<String, dynamic> json) => MatchDetails(
-      seekerSwipeType: $enumDecode(_$SeekerSwipeTypeEnumMap, json['seekerSwipeType']),
-      ownerResponse: $enumDecodeNullable(_$OwnerResponseEnumMap, json['ownerResponse']),
       matchedAt: DateTime.parse(json['matchedAt'] as String),
-      status: $enumDecode(_$MatchStatusEnumMap, json['status']),
-      compatibility: (json['compatibility'] as num).toDouble(),
+      seekerSwipe: $enumDecode(_$SeekerSwipeTypeEnumMap, json['seekerSwipe']),
+      ownerInterest: json['ownerInterest'] as bool,
     );
 
-Map<String, dynamic> _$MatchDetailsToJson(MatchDetails instance) => <String, dynamic>{
-      'seekerSwipeType': _$SeekerSwipeTypeEnumMap[instance.seekerSwipeType]!,
-      'ownerResponse': _$OwnerResponseEnumMap[instance.ownerResponse],
+Map<String, dynamic> _$MatchDetailsToJson(MatchDetails instance) =>
+    <String, dynamic>{
       'matchedAt': instance.matchedAt.toIso8601String(),
-      'status': _$MatchStatusEnumMap[instance.status]!,
-      'compatibility': instance.compatibility,
+      'seekerSwipe': _$SeekerSwipeTypeEnumMap[instance.seekerSwipe]!,
+      'ownerInterest': instance.ownerInterest,
     };
 
 const _$SeekerSwipeTypeEnumMap = {
@@ -57,30 +63,18 @@ const _$SeekerSwipeTypeEnumMap = {
   SeekerSwipeType.superLike: 'super',
 };
 
-const _$OwnerResponseEnumMap = {
-  OwnerResponse.interested: 'interested',
-  OwnerResponse.notInterested: 'not_interested',
-  OwnerResponse.pending: 'pending',
-};
-
-const _$MatchStatusEnumMap = {
-  MatchStatus.active: 'active',
-  MatchStatus.expired: 'expired',
-  MatchStatus.blocked: 'blocked',
-};
-
-MatchCommunication _$MatchCommunicationFromJson(Map<String, dynamic> json) => MatchCommunication(
-      chatEnabled: json['chatEnabled'] as bool,
+MatchCommunication _$MatchCommunicationFromJson(Map<String, dynamic> json) =>
+    MatchCommunication(
+      chatRoomId: json['chatRoomId'] as String,
       lastMessageAt: json['lastMessageAt'] == null
           ? null
           : DateTime.parse(json['lastMessageAt'] as String),
-      messageCount: json['messageCount'] as int,
-      contactExchanged: json['contactExchanged'] as bool,
+      messageCount: (json['messageCount'] as num).toInt(),
     );
 
-Map<String, dynamic> _$MatchCommunicationToJson(MatchCommunication instance) => <String, dynamic>{
-      'chatEnabled': instance.chatEnabled,
+Map<String, dynamic> _$MatchCommunicationToJson(MatchCommunication instance) =>
+    <String, dynamic>{
+      'chatRoomId': instance.chatRoomId,
       'lastMessageAt': instance.lastMessageAt?.toIso8601String(),
       'messageCount': instance.messageCount,
-      'contactExchanged': instance.contactExchanged,
     };
